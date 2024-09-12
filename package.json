@@ -1,5 +1,5 @@
 {
-  "name": "scrape",
+  "name": "@ystorm5/scrape",
   "version": "1.0.0",
   "description": "Library to scrape data from a website.",
   "main": "index.js",
