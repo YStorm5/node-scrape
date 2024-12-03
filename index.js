@@ -1,5 +1,9 @@
 import { JSDOM } from "jsdom";
-import { removeBrackets, toCamelCase } from "./utils.js";
+import {
+  extractColumnMap,
+  generateColumnLayout,
+  extractTableData,
+} from "./utils.js";
 import fetch from "node-fetch";
 import puppeteer from "puppeteer";
 
@@ -82,83 +86,18 @@ class Scrape {
   /**
    * Scrape data from target `table` element.
    * @param {string} selector - The CSS selector of the target table element.
-   * @param {number} [skip] - Indicate how many rows to consider as header inside `<tbody>`. If the table has `<thead>`, this parameter is not required.
+   * @param {number} [skip] - Indicate how many rows to consider as header inside `<table>`.
    * @returns TableData[] - An array of TableData.
    */
   table(selector, skip) {
-    const _table = this.#doc.window.document.querySelector(selector);
-    const _rows = [];
-    const _skipRows = [];
-    let _skip = skip ?? 0;
-    let _hasHead = false;
-
-    // check if there thead
-    if (_table == null) throw new Error("There is no target table");
-    const _tbody = _table.querySelector("tbody");
-    if (_tbody == null) throw new Error("There is no tbody inside the table");
-    const _thead = _table.children;
-    for (const ele of _thead) {
-      if (ele.nodeName == "THEAD") {
-        _hasHead = true;
-        ele.querySelectorAll("tr").forEach((e) => {
-          const _element = e;
-          _skipRows.push(_element);
-        });
-        _skip = _skipRows.length;
-        break;
-      }
-    }
-    _tbody.querySelectorAll("tr").forEach((e, i) => {
-      const _element = e;
-      if (!_hasHead) {
-        if (i < _skip) _skipRows.push(_element);
-        else _rows.push(_element);
-      } else {
-        _rows.push(_element);
-      }
-    });
-    function generateColumn(i, _value, _cols) {
-      const _header = {};
-      if (i < _skipRows.length) {
-        const childrens = Array.from(_skipRows[i].children); // 3
-        let same = true;
-        childrens.slice(0, _cols ?? childrens.length).forEach((v) => {
-          const col = v;
-          const colSpan = col.getAttribute("colspan") ?? 1;
-          const _cols = +colSpan; // 5
-          if (_cols == 1) {
-            _header[toCamelCase(removeBrackets(col.textContent))] = _value
-              .shift()
-              ?.toString()
-              .trim();
-          } else {
-            if (same) {
-              ++i;
-              same = false;
-            }
-            _header[toCamelCase(removeBrackets(col.textContent))] =
-              generateColumn(i, _value, _cols);
-          }
-        });
-      }
-      return _header;
-    }
-
-    const tds = _rows?.splice(0, _rows.length).map((e) => {
-      const rows = [];
-      for (const v of e.children) {
-        const el = v;
-        const colSpan = el.getAttribute("colspan") ?? 1;
-        const cols = +colSpan;
-        Array(cols)
-          .fill(el.textContent)
-          .forEach((v) => {
-            rows.push(removeBrackets(v));
-          });
-      }
-      return generateColumn(0, rows);
-    });
-    return tds;
+    const table = this.#doc.window.document.querySelector(selector);
+    if (!table) throw new Error("No table found with the given selector");
+    const tbody = table.querySelector("tbody");
+    if (!tbody) throw new Error("No tbody found in the table");
+    const columnMap = extractColumnMap(table, skip);
+    // generate column
+    const columnLayout = generateColumnLayout(columnMap, 0, 0, "");
+    return extractTableData(tbody, columnLayout, skip);
   }
 }
 /**

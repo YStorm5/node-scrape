@@ -10,8 +10,8 @@ To use this code, you need to have Node installed on your system. You can instal
 
 ### `scrape(url:string,wait?:string | number): Promise<Scrape>`
 
-- **url** - Url of website to scrape
-- **wait** - Optional. Waits for the website to load, useful if the website needs to run some scripts before populating elements.
+-   **url** - Url of website to scrape
+-   **wait** - Optional. Waits for the website to load, useful if the website needs to run some scripts before populating elements.
 
 ```javascript
 import { scrape } from "@ystorm5/scrape";
@@ -59,11 +59,11 @@ This method scrapes the specified attribute of the target element(s) matching th
 const attrList = scraper.attr("selector", "attribute");
 ```
 
-#### `table(selector: string, skip?: number): TableData[]`
+#### `table(selector: string, skip: number): TableData[]`
 
 This method scrapes the data of the target table and returns an array of object.
 
-- **skip**: Number of rows to skip, usually the table header, which will be used as object properties.
+-   **skip**: Number of rows to skip, usually the table header, which will be used as object properties.
 
 ```javascript
 const data = scraper.table("table");
@@ -81,10 +81,10 @@ import { scrape } from "@ystorm5/scrape";
 
 const url = "https://example.com";
 try {
-  const scraper = await scrape(url);
-  const titleList = scraper.text("h1");
-  console.log(titleList);
+    const scraper = await scrape(url);
+    const titleList = scraper.text("h1");
+    console.log(titleList);
 } catch (error) {
-  console.error(error);
+    console.error(error);
 }
 ```

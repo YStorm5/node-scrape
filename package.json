@@ -1,17 +1,28 @@
 {
-  "name": "@ystorm5/scrape",
-  "version": "1.0.0",
-  "description": "Library to scrape data from a website.",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "panha",
-  "license": "MIT",
-  "type": "module",
-  "dependencies": {
-    "jsdom": "^25.0.0",
-    "node-fetch": "^3.3.2",
-    "puppeteer": "^23.3.0"
-  }
+    "name": "@ystorm5/scrape",
+    "version": "1.1.0",
+    "description": "Library to scrape data from a website.",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [
+        "scrape",
+        "scraping",
+        "web-scraping",
+        "information"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/YStorm5/node-scrape.git"
+    },
+    "homepage": "https://github.com/YStorm5/node-scrape#readme",
+    "author": "panha",
+    "license": "MIT",
+    "type": "module",
+    "dependencies": {
+        "jsdom": "^25.0.0",
+        "node-fetch": "^3.3.2",
+        "puppeteer": "^23.3.0"
+    }
 }
